@@ -1,0 +1,14 @@
+type:
+    # Alert Production pipeline: https://pipelines.lsst.io/v/daily/modules/lsst.ap.pipe/index.html
+    ap:
+        # The script to be executed by HTCondor
+        script: "jobs/ap_job.sh"
+        # Environment variables required by the job script
+        env:
+            - "AP_JOB_OUTPUT_DIR"
+            - "AP_VISIT_ID"
+            - "AP_CCD_NUM"
+            - "AP_REPO"
+            - "AP_TEMPLATE"
+            - "AP_CALIB"
+            - "AP_FILTER"

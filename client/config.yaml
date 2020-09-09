@@ -1,0 +1,10 @@
+data:
+  repo:     "/datasets/des_sn/repo_Y3/"
+  template: "/datasets/des_sn/repo_Y3/templates/"
+  db:       "/datasets/des_sn/repo_Y3/registry.sqlite3"
+  calib:    "/datasets/des_sn/calib/"
+  filter:   "g"
+job:
+  output_dir: '/project/manninga/Prompt_Processing/OCSP_Job_Manager/output'
+  log_dir:    '/project/manninga/Prompt_Processing/OCSP_Job_Manager/logs'
+

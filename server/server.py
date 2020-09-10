@@ -1,4 +1,4 @@
-from globals import STATUS_OK, STATUS_ERROR
+from globals import STATUS_OK, STATUS_ERROR, CONDOR_JOB_STATES
 import envvars
 import logging
 import tornado.ioloop
@@ -6,7 +6,7 @@ import tornado.web
 import tornado
 import json
 from job_manager import JobManager
-
+from datetime import datetime
 
 # Configure logging
 log_format = "%(asctime)s  %(name)8s  %(levelname)5s  %(message)s"
@@ -73,9 +73,19 @@ class JobHandler(BaseHandler):
         response = {
             'status': STATUS_OK,
             'msg': '',
-            'job_id': '',
-            'cluster_id': '',
+            'job': {},
         }
+        cluster_id = self.get_query_argument('id')
+        job_info = jm.status(cluster_id)
+        if not job_info:
+            response['status'] = STATUS_ERROR
+            response['msg'] = 'Job not found'
+            self.write(response)
+            return
+        response['job']['clusterId'] = job_info['ClusterId']
+        response['job']['state'] = CONDOR_JOB_STATES[job_info['JobStatus']]
+        if job_info['JobStatus'] == 4:
+            response['job']['timeCompleted'] = datetime.fromtimestamp(job_info['CompletionDate']).strftime("%A, %B %d, %Y %I:%M:%S")
         self.write(response)
 
     def post(self):
@@ -86,7 +96,7 @@ class JobHandler(BaseHandler):
         job_type = self.getarg('type')
         job_env = self.getarg('env')
         log_dir = self.getarg('log_dir')
-        status, msg, response['job_id'], response['cluster_id'] = jm.launch_job(job_type, job_env, log_dir)
+        status, msg, response['job_id'], response['cluster_id'] = jm.launch(job_type, job_env, log_dir)
         if status != STATUS_OK:
             response['status'] = STATUS_ERROR
             response['msg'] = msg
@@ -97,7 +107,7 @@ def make_app(base_path=''):
     settings = {"debug": True}
     return tornado.web.Application(
         [
-            (r"{}/job?".format(base_path), JobHandler),
+            (r"{}/job".format(base_path), JobHandler),
         ],
         **settings
     )

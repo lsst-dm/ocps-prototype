@@ -1,9 +1,11 @@
+from globals import STATUS_OK, STATUS_ERROR
 import envvars
 import requests
 import json
 import yaml
 import sqlite3
 import random
+import time
 
 # Import credentials and config from environment variables
 config = {
@@ -27,6 +29,16 @@ def db_close_conn(db):
 def get_job():
     r = requests.get(
         '{}/job'.format(config['apiBaseUrl'])
+    )
+    response = r.json()
+    return response
+
+def get_job_status(cluster_id):
+    r = requests.get(
+        '{}/job'.format(config['apiBaseUrl']),
+        params={
+            'id': cluster_id
+        }
     )
     response = r.json()
     return response
@@ -133,4 +145,25 @@ if __name__ == '__main__':
     print('Random image from selected data: \n{}'.format(json.dumps(random_image, indent=2)))
     # Alert production job type specified
     response = post_job_ap(conf, random_image)
-    print('post_job_ap: \n{}'.format(json.dumps(response, indent=2)))
+    cluster_id = response['cluster_id']
+    print('POST /api/v1/job : \n{}'.format(json.dumps(response, indent=2)))
+
+    # # API endpoint test: GET /job
+    # response = get_job_status(response['cluster_id'])
+    # print('get_job_status: \n{}'.format(json.dumps(response, indent=2)))
+
+    print('Polling status of job: GET /api/v1/job?id={} ...'.format(cluster_id), end='')
+    max_loops = 100
+    idx = 0
+    while idx < max_loops:
+        idx = idx + 1
+        response = get_job_status(cluster_id)
+        if response['status'] != STATUS_OK or response['job']['state'] in ['completed', 'removed', 'held', 'suspended']:
+            break
+        print('.', end='', sep='', flush=True)
+        time.sleep(10)
+    print('\nJob Status ({}): \n{}'.format(cluster_id, json.dumps(response, indent=2)))
+
+    # # API endpoint test: GET /job
+    # response = get_job_status(307)
+    # print('get_job_status: \n{}'.format(json.dumps(response, indent=2)))

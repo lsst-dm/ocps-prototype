@@ -33,11 +33,11 @@ def get_job():
     response = r.json()
     return response
 
-def get_job_status(cluster_id):
+def get_job_status(job_id):
     r = requests.get(
         '{}/job'.format(config['apiBaseUrl']),
         params={
-            'id': cluster_id
+            'id': job_id
         }
     )
     response = r.json()
@@ -146,23 +146,24 @@ if __name__ == '__main__':
     # Alert production job type specified
     response = post_job_ap(conf, random_image)
     cluster_id = response['cluster_id']
+    job_id = response['job_id']
     print('POST /api/v1/job : \n{}'.format(json.dumps(response, indent=2)))
 
     # # API endpoint test: GET /job
     # response = get_job_status(response['cluster_id'])
     # print('get_job_status: \n{}'.format(json.dumps(response, indent=2)))
 
-    print('Polling status of job: GET /api/v1/job?id={} ...'.format(cluster_id), end='')
+    print('Polling status of job: GET /api/v1/job?id={} ...'.format(job_id), end='')
     max_loops = 100
     idx = 0
     while idx < max_loops:
         idx = idx + 1
-        response = get_job_status(cluster_id)
+        response = get_job_status(job_id)
         if response['status'] != STATUS_OK or response['job']['state'] in ['completed', 'removed', 'held', 'suspended']:
             break
         print('.', end='', sep='', flush=True)
         time.sleep(10)
-    print('\nJob Status ({}): \n{}'.format(cluster_id, json.dumps(response, indent=2)))
+    print('\nJob Status ({}): \n{}'.format(job_id, json.dumps(response, indent=2)))
 
     # # API endpoint test: GET /job
     # response = get_job_status(307)

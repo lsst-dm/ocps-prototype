@@ -1,6 +1,7 @@
 from globals import STATUS_OK, STATUS_ERROR
 import sqlite3
 import os
+from pathlib import Path
 
 class DbConnector(object):
     def __init__(self, sqliteDbFilePath=None, read_only=True):
@@ -8,11 +9,12 @@ class DbConnector(object):
         self.read_only = read_only
         self.db_conn = None
         self.db_cursor = None
+        self.init()
 
 
-    def open():
+    def open(self):
         # Acquire a database handle
-        if read_only:
+        if self.read_only:
             self.db_conn = sqlite3.connect('file:{}?mode=ro'.format(self.db_file), uri=True)
         else:
             self.db_conn = sqlite3.connect('file:{}'.format(self.db_file), uri=True)
@@ -20,8 +22,29 @@ class DbConnector(object):
         self.db_cursor = self.db_conn.cursor()
 
 
-    def close(db):
+    def close(self):
         # Commit any remaining changes and close the connection
         self.db_conn.commit()
         self.db_conn.close()
 
+    def init(self):
+        if not os.path.isfile(self.db_file):
+            Path(self.db_file).touch()
+        self.open()
+        # Create table
+        sql = '''
+        CREATE TABLE IF NOT EXISTS `job`(
+            `id` INTEGER PRIMARY KEY,
+            `type` varchar(50) NOT NULL,
+            `uuid` TEXT NOT NULL,
+            `cluster_id` INTEGER NOT NULL,
+            `status` TEXT NOT NULL,
+            `time_submit` datetime DEFAULT 0,
+            `time_start` datetime DEFAULT 0,
+            `time_complete` datetime DEFAULT 0,
+            `spec` MEDIUMTEXT NOT NULL,
+            `msg` MEDIUMTEXT NOT NULL
+        )
+        '''
+        self.db_cursor.execute(sql)
+        self.close()

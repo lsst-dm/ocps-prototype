@@ -4,5 +4,6 @@ __pycache__/
 *$py.class
 
 test.log
-output/*
-logs/*
+output/**
+logs/**
+db/**

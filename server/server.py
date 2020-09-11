@@ -5,6 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado
 import json
+import os
 from job_manager import JobManager
 from datetime import datetime
 
@@ -75,8 +76,8 @@ class JobHandler(BaseHandler):
             'msg': '',
             'job': {},
         }
-        cluster_id = self.get_query_argument('id')
-        job_info = jm.status(cluster_id)
+        job_id = self.get_query_argument('id')
+        job_info = jm.status(job_id)
         if not job_info:
             response['status'] = STATUS_ERROR
             response['msg'] = 'Job not found'

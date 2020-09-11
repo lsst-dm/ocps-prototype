@@ -1,9 +1,12 @@
-from globals import STATUS_OK, STATUS_ERROR
+from globals import STATUS_OK, STATUS_ERROR, CONDOR_JOB_STATES
 import yaml
 import os
 import htcondor
 from uuid import uuid4
-import logging 
+import logging
+from db_connector import DbConnector
+import datetime
+import json
 
 log_format = "%(asctime)s  %(name)8s  %(levelname)5s  %(message)s"
 logging.basicConfig(
@@ -18,6 +21,13 @@ class JobManager(object):
     def __init__(self):
         with open('jobs/job_specs.yaml', 'r') as f:
             self.job_types = yaml.load(f, Loader=yaml.SafeLoader)['type']
+        dbFilePath = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), 
+            "../db",
+            "job_manager.sqlite"
+        )
+        os.makedirs(os.path.dirname(dbFilePath), exist_ok=True)
+        self.db = DbConnector(dbFilePath, read_only=False)
 
 
     def launch(self, type, env, log_dir):
@@ -43,23 +53,36 @@ class JobManager(object):
         job_id = str(uuid4()).replace("-", "")
         # Create the output log directory if it does not exist
         os.makedirs(log_dir, exist_ok=True)
-        # Submit the HTCondor job
-        htcondor_job = htcondor.Submit({
+        job_spec = {
             "executable": self.job_types[type]['script'],      # the program to run on the execute node
             "output": "{}/{}.out".format(log_dir, job_id),            # anything the job prints to standard output will end up in this file
             "error":  "{}/{}.err".format(log_dir, job_id),            # anything the job prints to standard error will end up in this file
             "log":    "{}/{}.log".format(log_dir, job_id),            # this file will contain a record of what happened to the job
             "getenv": "True",
-        })
+        }
+        # Submit the HTCondor job
+        htcondor_job = htcondor.Submit(job_spec)
         htcondor_schedd = htcondor.Schedd()          # get the Python representation of the scheduler
         with htcondor_schedd.transaction() as txn:   # open a transaction, represented by `txn`
             cluster_id = htcondor_job.queue(txn)     # queues one job in the current transaction; returns job's ClusterID
         if not isinstance(cluster_id, int):
             msg = 'Error submitting Condor job'
             status = STATUS_ERROR
+        else:
+            self.register_job({
+                'type': type,
+                'uuid': job_id,
+                'cluster_id': cluster_id,
+                'status': 'submitted',
+                'time_submit': datetime.datetime.utcnow(),
+                'spec': json.dumps(job_spec),
+                'msg': '',
+            })
         return status, msg, job_id, cluster_id
     
-    def status(self, cluster_id):
+    def status(self, job_id):
+
+        cluster_id = self.get_cluster_id(job_id)
         schedd = htcondor.Schedd()
         # First search the jobs currently in queue (condor_q)
         attr_list = [
@@ -78,8 +101,13 @@ class JobManager(object):
             }
             for field in attr_list:
                 job_status[field] = classad[field]
+                print('Update for active job:')
+            self.update_job(job_id, updates={
+                'status': CONDOR_JOB_STATES[job_status['JobStatus']],
+            })
         # Next search job history (condor_history)
         if not job_status:
+            print('Job is no longer active.')
             projection = [
                     'ClusterId', 
                     'JobStatus', 
@@ -107,5 +135,65 @@ class JobManager(object):
                 }
                 for field in projection:
                     job_status[field] = classad[field]
-
+                print('Update for completed job:')
+                self.update_job(job_id, updates={
+                    'status': CONDOR_JOB_STATES[job_status['JobStatus']],
+                    'time_start': datetime.datetime.fromtimestamp(job_status['JobStartDate']),
+                    'time_complete': datetime.datetime.fromtimestamp(job_status['CompletionDate'])
+                })
         return job_status
+
+    def register_job(self, job_info):
+        self.db.open()
+
+        sql = '''
+        INSERT INTO `job` (
+            `type`, 
+            `uuid`, 
+            `cluster_id`, 
+            `status`,
+            `time_submit`,
+            `spec`,
+            `msg`
+        )
+        VALUES (?,?,?,?,?,?,?)
+        '''
+        self.db.db_cursor.execute(sql, (
+            job_info['type'],
+            job_info['uuid'],
+            job_info['cluster_id'],
+            job_info['status'],
+            job_info['time_submit'],
+            job_info['spec'],
+            job_info['msg'],
+        ))
+
+        self.db.close()
+
+    def update_job(self, job_id, updates={}):
+        self.db.open()
+        for column in updates:
+            if column != 'uuid':
+                sql = '''
+                UPDATE `job` SET `{}` = ? WHERE `uuid` = ?
+                '''.format(column)
+                self.db.db_cursor.execute(sql, (
+                    updates[column],
+                    job_id
+                ))
+                print('Updated column "{}" with value "{}"'.format(column, updates[column]))
+        self.db.close()
+    
+
+    def get_cluster_id(self, job_id):
+        self.db.open()
+        sql = '''
+        SELECT `cluster_id` FROM `job` WHERE `uuid` = ?
+        '''
+        results = self.db.db_cursor.execute(sql, (
+            job_id,
+        ))
+        for row in results:
+            cluster_id = row[0]
+        self.db.close()
+        return cluster_id

@@ -145,6 +145,7 @@ class MonitorCompleteHandler(BaseHandler):
         }
         job_id = self.getarg('id')
         logger.info('Data arrived for job "{}". Launching job...'.format(job_id))
+        status, msg, response['cluster_id'] = jm.launch(job_id)
         self.write(response)
 
 

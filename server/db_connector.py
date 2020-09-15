@@ -2,6 +2,7 @@ from globals import STATUS_OK, STATUS_ERROR
 import sqlite3
 import os
 from pathlib import Path
+import json
 
 class DbConnector(object):
     def __init__(self, sqliteDbFilePath=None, read_only=True):
@@ -63,6 +64,6 @@ class DbConnector(object):
         ))
         for row in results:
             job_info['type'] = row[0]
-            job_info['spec'] = row[1]
+            job_info['spec'] = json.loads(row[1])
         self.close()
         return job_info

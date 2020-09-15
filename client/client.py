@@ -8,7 +8,6 @@ import sqlite3
 import random
 import time
 import asyncio
-from aiohttp import ClientSession
 
 # Import credentials and config from environment variables
 config = {
@@ -27,56 +26,6 @@ def db_open_conn(db_file='', read_only=True):
 def db_close_conn(db):
     db.commit()
     db.close()
-
-
-def get_job():
-    r = requests.get(
-        '{}/job'.format(config['apiBaseUrl'])
-    )
-    response = r.json()
-    return response
-
-def get_job_status(job_id):
-    r = requests.get(
-        '{}/job'.format(config['apiBaseUrl']),
-        params={
-            'id': job_id
-        }
-    )
-    response = r.json()
-    return response
-
-
-def post_job(type=''):
-    r = requests.post(
-        '{}/job'.format(config['apiBaseUrl']),
-        data={
-            'type': type,
-        }
-    )
-    response = r.json()
-    return response
-
-
-def post_job_ap(conf, image):
-    r = requests.post(
-        '{}/job'.format(config['apiBaseUrl']),
-        json={
-            'type': 'ap',
-            'env': {
-                'AP_JOB_OUTPUT_DIR': conf['job']['output_dir'],
-                'AP_VISIT_ID': image['visit_id'],
-                'AP_CCD_NUM': image['ccd'],
-                'AP_REPO': conf['data']['repo'],
-                'AP_TEMPLATE': conf['data']['template'],
-                'AP_CALIB': conf['data']['calib'],
-                'AP_FILTER': conf['data']['filter'],
-            },
-            'log_dir': conf['job']['log_dir'],
-        }
-    )
-    response = r.json()
-    return response
 
 
 def query_butler_repo_for_filter(conf):
@@ -113,21 +62,37 @@ def query_butler_repo_for_filter(conf):
     return data
 
 
-async def monitor_file(session, duration):
-    r = await session.post(
-        '{}/monitor'.format(config['apiBaseUrl']),
-        json={
-            'filename': 'datafile.{}.dat'.format(duration),
-            'duration': duration,
+def get_job_status(job_id):
+    r = requests.get(
+        '{}/job'.format(config['apiBaseUrl']),
+        params={
+            'id': job_id
         }
     )
     response = r.json()
     return response
 
 
-async def main():
-    async with ClientSession() as session:
-        await asyncio.gather(*[monitor_file(session, duration) for duration in range(1,20,3)])
+
+def post_job_ap(conf, image):
+    r = requests.post(
+        '{}/job'.format(config['apiBaseUrl']),
+        json={
+            'type': 'ap',
+            'env': {
+                'AP_JOB_OUTPUT_DIR': conf['job']['output_dir'],
+                'AP_VISIT_ID': image['visit_id'],
+                'AP_CCD_NUM': image['ccd'],
+                'AP_REPO': conf['data']['repo'],
+                'AP_TEMPLATE': conf['data']['template'],
+                'AP_CALIB': conf['data']['calib'],
+                'AP_FILTER': conf['data']['filter'],
+            },
+            'log_dir': conf['job']['log_dir'],
+        }
+    )
+    response = r.json()
+    return response
 
 
 if __name__ == '__main__':
@@ -157,13 +122,13 @@ if __name__ == '__main__':
         conf = yaml.load(f, Loader=yaml.SafeLoader)
 
     # Request four independent jobs in rapid succession to demonstrate parallelism
-    for i in range(1,5):
+    for i in range(1,2):
         # Select random image from Butler repo
         data = query_butler_repo_for_filter(conf)
         random_image = random.choice(data)
-        print('Random image from selected data: \n{}'.format(json.dumps(random_image, indent=2)))
+        print('Random image from selected data: {}'.format(json.dumps(random_image)))
         # Alert production job type specified
         response = post_job_ap(conf, random_image)
         cluster_id = response['cluster_id']
         job_id = response['job_id']
-        print('POST /api/v1/job : \n{}'.format(json.dumps(response, indent=2)))
+        print('POST /api/v1/job : {}'.format(json.dumps(response)))

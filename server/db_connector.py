@@ -37,7 +37,7 @@ class DbConnector(object):
             `id` INTEGER PRIMARY KEY,
             `type` varchar(50) NOT NULL,
             `uuid` TEXT NOT NULL,
-            `cluster_id` INTEGER NOT NULL,
+            `cluster_id` INTEGER,
             `status` TEXT NOT NULL,
             `time_submit` datetime DEFAULT 0,
             `time_start` datetime DEFAULT 0,
@@ -48,3 +48,21 @@ class DbConnector(object):
         '''
         self.db_cursor.execute(sql)
         self.close()
+
+    def get_job_info(self, job_id):
+        job_info = {
+            'type': None,
+            'spec': None
+        }
+        self.open()
+        sql = '''
+        SELECT `type`,`spec` FROM `job` WHERE `uuid` = ?
+        '''
+        results = self.db_cursor.execute(sql, (
+            job_id,
+        ))
+        for row in results:
+            job_info['type'] = row[0]
+            job_info['spec'] = row[1]
+        self.close()
+        return job_info

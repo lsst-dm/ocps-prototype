@@ -3,6 +3,7 @@ import envvars
 import logging
 import tornado.ioloop
 import tornado.web
+from tornado.gen import coroutine
 import tornado
 import json
 import os
@@ -93,14 +94,57 @@ class JobHandler(BaseHandler):
         response = {
             'status': STATUS_OK,
             'msg': '',
+            'job_id': None,
+            'cluster_id': None,
         }
         job_type = self.getarg('type')
         job_env = self.getarg('env')
         log_dir = self.getarg('log_dir')
-        status, msg, response['job_id'], response['cluster_id'] = jm.launch(job_type, job_env, log_dir)
+        # status, msg, response['job_id'], response['cluster_id'] = jm.launch(job_type, job_env, log_dir)
+
+        status, msg, job_id = jm.register_job({
+            'type': job_type,
+            'env': job_env,
+            'log_dir': log_dir,
+        })
         if status != STATUS_OK:
             response['status'] = STATUS_ERROR
             response['msg'] = msg
+            self.write(response)
+            return
+        response['job_id'] = job_id
+        status, msg = jm.init(job_id)
+        if status != STATUS_OK:
+            response['status'] = STATUS_ERROR
+            response['msg'] = msg
+            self.write(response)
+            return
+        self.write(response)
+
+
+class MonitorHandler(BaseHandler):
+    async def post(self):
+        response = {
+            'status': STATUS_OK,
+            'msg': '',
+        }
+        filename = self.getarg('filename')
+        duration = self.getarg('duration')
+        status, msg = await jm.monitor(filename, duration)
+        if status != STATUS_OK:
+            response['status'] = STATUS_ERROR
+            response['msg'] = msg
+        self.write(response)
+
+
+class MonitorCompleteHandler(BaseHandler):
+    def get(self):
+        response = {
+            'status': STATUS_OK,
+            'msg': '',
+        }
+        job_id = self.getarg('id')
+        logger.info('Data arrived for job "{}". Launching job...'.format(job_id))
         self.write(response)
 
 
@@ -109,6 +153,7 @@ def make_app(base_path=''):
     return tornado.web.Application(
         [
             (r"{}/job".format(base_path), JobHandler),
+            (r"{}/monitor/complete".format(base_path), MonitorCompleteHandler),
         ],
         **settings
     )

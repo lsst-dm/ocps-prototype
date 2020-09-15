@@ -11,7 +11,8 @@ cd "${scriptDir}/client" || exit 1
 source "/software/lsstsw/stack3/loadLSST.bash"
 setup lsst_distrib
 export PYTHONPATH=$PYTHONPATH:/usr/lib64/python3.6/site-packages
+# pip install --user aiohttp
 
-python client.py --config config.yaml
+python client.py --config config.yaml # --duration $1
 
 exit 0

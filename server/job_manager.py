@@ -1,4 +1,5 @@
 from globals import STATUS_OK, STATUS_ERROR, CONDOR_JOB_STATES
+import envvars
 import yaml
 import os
 import htcondor
@@ -7,6 +8,9 @@ import logging
 from db_connector import DbConnector
 import datetime
 import json
+import time
+import asyncio
+import subprocess
 
 log_format = "%(asctime)s  %(name)8s  %(levelname)5s  %(message)s"
 logging.basicConfig(
@@ -144,31 +148,68 @@ class JobManager(object):
         return job_status
 
     def register_job(self, job_info):
-        self.db.open()
+        status = STATUS_OK
+        msg = ''
+        job_id = None
 
-        sql = '''
-        INSERT INTO `job` (
-            `type`, 
-            `uuid`, 
-            `cluster_id`, 
-            `status`,
-            `time_submit`,
-            `spec`,
-            `msg`
-        )
-        VALUES (?,?,?,?,?,?,?)
-        '''
-        self.db.db_cursor.execute(sql, (
-            job_info['type'],
-            job_info['uuid'],
-            job_info['cluster_id'],
-            job_info['status'],
-            job_info['time_submit'],
-            job_info['spec'],
-            job_info['msg'],
-        ))
+        self.db.open()
+        try:
+
+            # Generate unique identifier for this job for JobManager
+            job_id = str(uuid4()).replace("-", "")
+
+            job_type = job_info['type']
+
+            job_spec = {
+                "executable": self.job_types[job_type]['script'],      # the program to run on the execute node
+                "output": "{}/{}.out".format(job_info['log_dir'], job_id),            # anything the job prints to standard output will end up in this file
+                "error":  "{}/{}.err".format(job_info['log_dir'], job_id),            # anything the job prints to standard error will end up in this file
+                "log":    "{}/{}.log".format(job_info['log_dir'], job_id),            # this file will contain a record of what happened to the job
+                "env": job_info['env'],
+                "getenv": "True",
+            }
+
+            sql = '''
+            INSERT INTO `job` (
+                `type`, 
+                `uuid`, 
+                `cluster_id`, 
+                `status`,
+                `time_submit`,
+                `spec`,
+                `msg`
+            )
+            VALUES (?,?,?,?,?,?,?)
+            '''
+            self.db.db_cursor.execute(sql, (
+                job_type,
+                job_id,
+                None,
+                'init',
+                datetime.datetime.utcnow(),
+                json.dumps(job_spec),
+                '',
+            ))
+        except Exception as e:
+            status = STATUS_ERROR
+            msg = str(e).strip()
 
         self.db.close()
+        return status, msg, job_id
+
+    def init(self, job_id):
+        status = STATUS_OK
+        msg = ''
+        # Launch a subprocess that will monitor the data repo
+        # for the input data required for the pipeline job. 
+        # When the data arrives, launch the job using the JobManager
+        # API
+        api_url = '{}://{}:{}{}/monitor/complete'.format(envvars.API_PROTOCOL, envvars.API_DOMAIN, envvars.API_PORT, envvars.API_BASEPATH)
+        # Get the job info from the database
+        job_info = self.db.get_job_info(job_id)
+
+        subprocess.Popen(['python', 'monitor.py', '--id', job_id, '--type', job_info['type'], '--api_url', api_url])
+        return status, msg
 
     def update_job(self, job_id, updates={}):
         self.db.open()
@@ -197,3 +238,11 @@ class JobManager(object):
             cluster_id = row[0]
         self.db.close()
         return cluster_id
+
+    async def monitor(self, filename, duration=5):
+        status = STATUS_OK
+        msg = ''
+        print('Monitoring file "{}" for {} seconds...'.format(filename, duration))
+        await asyncio.sleep(duration)
+        print('Monitoring complete for file "{}".'.format(filename))
+        return status, msg

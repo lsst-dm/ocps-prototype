@@ -1,11 +1,14 @@
 from globals import STATUS_OK, STATUS_ERROR
 import envvars
+import argparse
 import requests
 import json
 import yaml
 import sqlite3
 import random
 import time
+import asyncio
+from aiohttp import ClientSession
 
 # Import credentials and config from environment variables
 config = {
@@ -109,9 +112,26 @@ def query_butler_repo_for_filter(conf):
     db_close_conn(db_conn)
     return data
 
-if __name__ == '__main__':
 
-    import argparse
+async def monitor_file(session, duration):
+    r = await session.post(
+        '{}/monitor'.format(config['apiBaseUrl']),
+        json={
+            'filename': 'datafile.{}.dat'.format(duration),
+            'duration': duration,
+        }
+    )
+    response = r.json()
+    return response
+
+
+async def main():
+    async with ClientSession() as session:
+        await asyncio.gather(*[monitor_file(session, duration) for duration in range(1,20,3)])
+
+
+if __name__ == '__main__':
+    # Define and parse input arguments 
     parser = argparse.ArgumentParser(description='Manage HTCondor jobs.')
     parser.add_argument(
         '--config',
@@ -121,6 +141,14 @@ if __name__ == '__main__':
         help='Job config file',
         required=True
     )
+    parser.add_argument(
+        '--duration',
+        dest='duration',
+        type=int,
+        nargs='?',
+        help='Duration in seconds',
+        required=False
+    )
     args = parser.parse_args()
 
     # Load the client config that defines the location of the Butler repo containing the data
@@ -128,43 +156,14 @@ if __name__ == '__main__':
     with open(configPath, 'r') as f:
         conf = yaml.load(f, Loader=yaml.SafeLoader)
 
-    # # API endpoint test: GET /job
-    # response = get_job()
-    # print('get_job: \n{}'.format(json.dumps(response, indent=2)))
-
-    # # API endpoint test: POST /job
-    # # No job info provided
-    # response = post_job()
-    # print('post_job: \n{}'.format(json.dumps(response, indent=2)))
-
-
-    # API endpoint test: POST /job
-    # Select random image from Butler repo
-    data = query_butler_repo_for_filter(conf)
-    random_image = random.choice(data)
-    print('Random image from selected data: \n{}'.format(json.dumps(random_image, indent=2)))
-    # Alert production job type specified
-    response = post_job_ap(conf, random_image)
-    cluster_id = response['cluster_id']
-    job_id = response['job_id']
-    print('POST /api/v1/job : \n{}'.format(json.dumps(response, indent=2)))
-
-    # # API endpoint test: GET /job
-    # response = get_job_status(response['cluster_id'])
-    # print('get_job_status: \n{}'.format(json.dumps(response, indent=2)))
-
-    print('Polling status of job: GET /api/v1/job?id={} ...'.format(job_id), end='')
-    max_loops = 100
-    idx = 0
-    while idx < max_loops:
-        idx = idx + 1
-        response = get_job_status(job_id)
-        if response['status'] != STATUS_OK or response['job']['state'] in ['completed', 'removed', 'held', 'suspended']:
-            break
-        print('.', end='', sep='', flush=True)
-        time.sleep(10)
-    print('\nJob Status ({}): \n{}'.format(job_id, json.dumps(response, indent=2)))
-
-    # # API endpoint test: GET /job
-    # response = get_job_status(307)
-    # print('get_job_status: \n{}'.format(json.dumps(response, indent=2)))
+    # Request four independent jobs in rapid succession to demonstrate parallelism
+    for i in range(1,5):
+        # Select random image from Butler repo
+        data = query_butler_repo_for_filter(conf)
+        random_image = random.choice(data)
+        print('Random image from selected data: \n{}'.format(json.dumps(random_image, indent=2)))
+        # Alert production job type specified
+        response = post_job_ap(conf, random_image)
+        cluster_id = response['cluster_id']
+        job_id = response['job_id']
+        print('POST /api/v1/job : \n{}'.format(json.dumps(response, indent=2)))

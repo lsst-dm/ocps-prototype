@@ -7,3 +7,5 @@ test.log
 output/**
 logs/**
 db/**
+
+.vscode/*

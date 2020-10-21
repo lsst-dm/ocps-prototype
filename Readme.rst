@@ -1,5 +1,17 @@
-Rubin prompt processing system prototype
-========================================
+Rubin OCS Controlled Pipeline System (OCPS) prototype
+========================================================
+
+Prototype
+------------------------------------------------------------------------
+
+.. image:: images/Prompt_processing_architecture_sketch.png
+
+The prototype OCPS Job Manager is designed as an evolving demonstration of the emerging system. 
+
+The prototype consists of a server and a client. 
+
+* The server is a `Tornado-based webserver <https://www.tornadoweb.org/en/stable/>`_ written in Python, which runs on `lsst-devl <https://developer.lsst.io/services/lsst-devl.html>`_ in order to execute HTCondor commands that are only accessible on that cluster.
+* The client represents the OCPS CSC that will ultimately be submitting jobs and fetching the results. The client is a Python script that could in principle be executed on any machine, but the `lsst-devl` firewall blocks access to the port on which the server listens; hence, the prototype client must also be run on `lsst-devl`. 
 
 Job Type Specification
 ----------------------

@@ -1,36 +1,189 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Rubin prompt processing system prototype &#8212; OCPS Job Manager  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rubin OCS Controlled Pipeline System (OCPS) prototype &mdash; OCPS Job Manager  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to OCPS Job Manager’s documentation!" href="index.html" />
+    <link rel="next" title="Development" href="Development.html" />
+    <link rel="prev" title="OCPS Job Manager Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-  </head><body>
-  
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> OCPS Job Manager
+          
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+          
+          </a>
+
+          
             
-  <div class="section" id="rubin-prompt-processing-system-prototype">
-<h1>Rubin prompt processing system prototype<a class="headerlink" href="#rubin-prompt-processing-system-prototype" title="Permalink to this headline">¶</a></h1>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rubin OCS Controlled Pipeline System (OCPS) prototype</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prototype">Prototype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#job-type-specification">Job Type Specification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#server-ocps-job-manager">Server - OCPS Job Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-ocsp-csc">Client - OCSP CSC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#job-manager-api-specification">Job Manager API Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#post-api-v1-job"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/job</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-api-v1-job-id-123"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/job?id=123</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#initial-demonstration-of-job-awaiting-data-arrival">Initial demonstration of job awaiting data arrival</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OCPS Job Manager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Rubin OCS Controlled Pipeline System (OCPS) prototype</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Readme.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rubin-ocs-controlled-pipeline-system-ocps-prototype">
+<h1>Rubin OCS Controlled Pipeline System (OCPS) prototype<a class="headerlink" href="#rubin-ocs-controlled-pipeline-system-ocps-prototype" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prototype">
+<h2>Prototype<a class="headerlink" href="#prototype" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/Prompt_processing_architecture_sketch.png" src="_images/Prompt_processing_architecture_sketch.png" />
+<p>The prototype OCPS Job Manager is designed as an evolving demonstration of the emerging system.</p>
+<p>The prototype consists of a server and a client.</p>
+<ul class="simple">
+<li>The server is a <a class="reference external" href="https://www.tornadoweb.org/en/stable/">Tornado-based webserver</a> written in Python, which runs on <a class="reference external" href="https://developer.lsst.io/services/lsst-devl.html">lsst-devl</a> in order to execute HTCondor commands that are only accessible on that cluster.</li>
+<li>The client represents the OCPS CSC that will ultimately be submitting jobs and fetching the results. The client is a Python script that could in principle be executed on any machine, but the <cite>lsst-devl</cite> firewall blocks access to the port on which the server listens; hence, the prototype client must also be run on <cite>lsst-devl</cite>.</li>
+</ul>
+</div>
 <div class="section" id="job-type-specification">
 <h2>Job Type Specification<a class="headerlink" href="#job-type-specification" title="Permalink to this headline">¶</a></h2>
 <p>The available job types are defined in a <code class="docutils literal notranslate"><span class="pre">jobs/job_specs.yaml</span></code> file that looks like:</p>
@@ -206,71 +359,59 @@ manninga 3409230  0.3  0.0 147520 22912 pts/0    S+   09:24   0:00 python monito
 </div>
 
 
+           </div>
+           
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="OCPS Job Manager Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, T. Andrew Manning
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">OCPS Job Manager</a></h1>
 
+    </section>
 
+  </div>
+  
 
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Rubin prompt processing system prototype</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#job-type-specification">Job Type Specification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#server-ocps-job-manager">Server - OCPS Job Manager</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#client-ocsp-csc">Client - OCSP CSC</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#job-manager-api-specification">Job Manager API Specification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#initial-demonstration-of-job-awaiting-data-arrival">Initial demonstration of job awaiting data arrival</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to OCPS Job Manager’s documentation!</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, T. Andrew Manning.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
-      
-      |
-      <a href="_sources/Readme.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
+  
+  
     
+   
 
-    
-  </body>
+</body>
 </html>

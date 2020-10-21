@@ -1,0 +1,9 @@
+Documentation
+========================================
+
+The documentation is powered by Sphinx, using the ReStructuredText format (``.rst``). With Sphinx installed locally, you can build the HTML files using ::
+
+  cd docs/
+  make html
+
+Then open ``docs/_build/html/index.html`` in your browser.

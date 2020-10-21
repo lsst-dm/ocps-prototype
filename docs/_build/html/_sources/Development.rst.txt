@@ -11,6 +11,8 @@ The documentation is powered by Sphinx, using the reStructuredText (reST) format
 
 Then open ``docs/_build/html/index.html`` in your browser.
 
+The ``.drawio`` files require the open source editor from https://www.diagrams.net/.
+
 There is a very helpful VS Code extension called `reStructuredText <https://github.com/vscode-restructuredtext/vscode-restructuredtext>`_ that provides a live preview of reST files using the Sphinx theme from the most recent build.
 
 .. image:: images/vscode_plugin.png

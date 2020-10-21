@@ -13,6 +13,12 @@ OCPS Job Manager Documentation
    Readme
    Development
 
+Links
+------------------------------
+
+* `DMTN-133: OCS driven data processing <https://dmtn-133.lsst.io>`_
+* `DMTN-143: Image Capture Simplification <https://dmtn-143.lsst.io>`_
+
 
 
 .. Indices and tables

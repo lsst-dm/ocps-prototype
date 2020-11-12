@@ -12,6 +12,7 @@ OCPS Job Manager Documentation
 
    Readme
    Development
+   openapi/Readme
 
 Links
 ------------------------------

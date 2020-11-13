@@ -93,10 +93,26 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Readme.html">Rubin OCS Controlled Pipeline System (OCPS) prototype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Readme.html">Rubin OCS Controlled Pipeline System (OCPS) prototype</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#prototype">Prototype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#job-type-specification">Job Type Specification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#server-ocps-job-manager">Server - OCPS Job Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#client-ocsp-csc">Client - OCSP CSC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#job-manager-api-specification">Job Manager API Specification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Readme.html#post-api-v1-job"><code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/v1/job</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Readme.html#get-api-v1-job-id-123"><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/job?id=123</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Readme.html#initial-demonstration-of-job-awaiting-data-arrival">Initial demonstration of job awaiting data arrival</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#development-environment">Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-system">Documentation system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sphinx">Sphinx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-editors-and-viewers">File editors and viewers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#development-environment">Development environment</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/Readme.html">OCPS Job Manager API</a></li>
@@ -152,7 +168,9 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/Development.rst.txt" rel="nofollow"> View page source</a>
+            
+              <a href="https://github.com/lsst-dm/ocps-prototype/blob/master/docs/Development.rst" class="fa fa-github"> Edit on GitHub</a>
+            
           
         
       </li>
@@ -167,20 +185,40 @@
             
   <div class="section" id="development">
 <h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<p>The documentation is powered by Sphinx, using the reStructuredText (reST) format. With Sphinx installed locally, you can build the HTML files using</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span>
-<span class="n">make</span> <span class="n">html</span>
+<div class="section" id="documentation-system">
+<h2>Documentation system<a class="headerlink" href="#documentation-system" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sphinx">
+<h3>Sphinx<a class="headerlink" href="#sphinx" title="Permalink to this headline">¶</a></h3>
+<p>The documentation is powered by <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>, using the reStructuredText (reST) format.</p>
+<p><a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/installation.html">Install Sphinx</a> using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">sphinx</span>
 </pre></div>
 </div>
-<p>Then open <code class="docutils literal notranslate"><span class="pre">docs/_build/html/index.html</span></code> in your browser.</p>
+<p>or on MacOS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">doc</span>
+</pre></div>
+</div>
+<p>With Sphinx installed locally, you can build the HTML files using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $REPO_ROOT/docs/
+./build_docs
+</pre></div>
+</div>
+<p>Then open <code class="docutils literal notranslate"><span class="pre">_build/html/index.html</span></code> in your browser.</p>
+<p>For the best viewing experience, (e.g. to view the <a class="reference external" href="api/spec.html">rendered API spec</a> using the <a class="reference external" href="https://editor.swagger.io/">Swagger UI</a>), use <a class="reference external" href="https://docs.docker.com/get-docker/">Docker</a> to run a local webserver</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">--</span><span class="n">rm</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8080</span><span class="p">:</span><span class="mi">80</span> <span class="o">-</span><span class="n">v</span> <span class="s2">&quot;$PWD/_build/html&quot;</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">html</span> <span class="n">nginx</span><span class="p">:</span><span class="mf">1.19</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>and then open <a class="reference external" href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
+</div>
+<div class="section" id="file-editors-and-viewers">
+<h3>File editors and viewers<a class="headerlink" href="#file-editors-and-viewers" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">.drawio</span></code> files require the open source editor from <a class="reference external" href="https://www.diagrams.net/">https://www.diagrams.net/</a>.</p>
 <p>There is a very helpful VS Code extension called <a class="reference external" href="https://github.com/vscode-restructuredtext/vscode-restructuredtext">reStructuredText</a> that provides a live preview of reST files using the Sphinx theme from the most recent build.</p>
 <img alt="_images/vscode_plugin.png" src="_images/vscode_plugin.png" />
 </div>
+</div>
 <div class="section" id="development-environment">
-<h2>Development Environment<a class="headerlink" href="#development-environment" title="Permalink to this headline">¶</a></h2>
+<h2>Development environment<a class="headerlink" href="#development-environment" title="Permalink to this headline">¶</a></h2>
 <p>Configure local workstation according to the SSH instructions at <a class="reference external" href="https://developer.lsst.io/services/lsst-login.html#lsst-login-connect">https://developer.lsst.io/services/lsst-login.html#lsst-login-connect</a>. I installed <code class="docutils literal notranslate"><span class="pre">kinit</span></code> and executed this first:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kinit</span> <span class="n">manninga</span><span class="nd">@NCSA</span><span class="o">.</span><span class="n">EDU</span>
 </pre></div>

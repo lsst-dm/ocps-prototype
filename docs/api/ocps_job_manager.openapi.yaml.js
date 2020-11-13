@@ -1,3 +1,6 @@
+
+const apispecyaml = `
+################################################################################
 openapi: 3.0.1
 info:
   title: OCPS Job Manager API
@@ -23,7 +26,7 @@ paths:
         description: |
           **Job specification**
 
-          The schema of the `config` property of the job specification is variable; it depends on the job type and that type's associated schema. The structure of the `config` property is defined by the schema, which can be fetched via [GET /schema/{job_type}](#/Schemas/getSchema)
+          The schema of the \`config\` property of the job specification is variable; it depends on the job type and that type's associated schema. The structure of the \`config\` property is defined by the schema, which can be fetched via [GET /schema/{job_type}](#/Schemas/getSchema)
         content:
           application/json:
             schema:
@@ -86,10 +89,10 @@ paths:
         required: true
         description: >
             What jobs to list:
-             * `all` - All jobs
-             * `complete` - Completed jobs
-             * `pending` - Pending jobs
-             * `running` - Running jobs
+             * \`all\` - All jobs
+             * \`complete\` - Completed jobs
+             * \`pending\` - Pending jobs
+             * \`running\` - Running jobs
         schema:
           $ref: '#/components/schemas/ListJobCategories'
       responses:
@@ -358,3 +361,5 @@ components:
                       type: string
                       description: Example parameter returned by the job
                       example: "Example value returned by the job"
+################################################################################
+`;

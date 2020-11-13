@@ -23,11 +23,11 @@ With Sphinx installed locally, you can build the HTML files using ::
 
 Then open ``_build/html/index.html`` in your browser.
 
-For the best viewing experience, (e.g. to view the `rendered API spec <api/spec.html>`_ using the `Swagger UI <https://editor.swagger.io/>`_), use `Docker <https://docs.docker.com/get-docker/>`_ to run a local webserver ::
+.. For the best viewing experience, (e.g. to view the `rendered API spec <api/spec.html>`_ using the `Swagger UI <https://editor.swagger.io/>`_), use `Docker <https://docs.docker.com/get-docker/>`_ to run a local webserver ::
 
-   docker run --rm -p 8080:80 -v "$PWD/_build/html":/usr/share/nginx/html nginx:1.19.0
+..    docker run --rm -p 8080:80 -v "$PWD/_build/html":/usr/share/nginx/html nginx:1.19.0
 
-and then open http://localhost:8080 in your browser.
+.. and then open http://localhost:8080 in your browser.
 
 File editors and viewers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

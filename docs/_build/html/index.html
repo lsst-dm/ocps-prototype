@@ -94,7 +94,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Readme.html">Rubin OCS Controlled Pipeline System (OCPS) prototype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="openapi/Readme.html">OCPS Job Manager API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/Readme.html">OCPS Job Manager API</a></li>
 </ul>
 
             
@@ -179,7 +179,7 @@
 <li class="toctree-l2"><a class="reference internal" href="Development.html#development-environment">Development Environment</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="openapi/Readme.html">OCPS Job Manager API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/Readme.html">OCPS Job Manager API</a></li>
 </ul>
 </div>
 <div class="section" id="links">
@@ -188,6 +188,29 @@
 <li><a class="reference external" href="https://dmtn-133.lsst.io">DMTN-133: OCS driven data processing</a></li>
 <li><a class="reference external" href="https://dmtn-143.lsst.io">DMTN-143: Image Capture Simplification</a></li>
 </ul>
+</div>
+<div class="section" id="documentation-system">
+<h2>Documentation system<a class="headerlink" href="#documentation-system" title="Permalink to this headline">¶</a></h2>
+<p>The documentation is powered by <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a>, using the reStructuredText (reST) format.</p>
+<p>Install <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/installation.html">Sphinx</a> using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">sphinx</span>
+</pre></div>
+</div>
+<p>or on MacOS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">doc</span>
+</pre></div>
+</div>
+<p>With Sphinx installed locally, you can build the HTML files using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $REPO_ROOT/docs/
+./build_docs
+</pre></div>
+</div>
+<p>Then open <code class="docutils literal notranslate"><span class="pre">_build/html/index.html</span></code> in your browser.</p>
+<p>For the best viewing experience, (e.g. to view the <a class="reference external" href="api/spec.html">rendered API spec</a> using the <a class="reference external" href="https://editor.swagger.io/">Swagger UI</a>), use <a class="reference external" href="https://docs.docker.com/get-docker/">Docker</a> to run a local webserver</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">--</span><span class="n">rm</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8080</span><span class="p">:</span><span class="mi">80</span> <span class="o">-</span><span class="n">v</span> <span class="s2">&quot;$PWD/_build/html&quot;</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">html</span> <span class="n">nginx</span><span class="p">:</span><span class="mf">1.19</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>and then open <a class="reference external" href="http://localhost:8080">http://localhost:8080</a> in your browser.</p>
 </div>
 </div>
 

@@ -9,3 +9,5 @@ logs/**
 db/**
 
 .vscode/*
+
+docs/_build/doctrees/**

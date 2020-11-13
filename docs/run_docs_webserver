@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+./build_docs
+docker container stop ocps-dev-docs || echo
+docker run -d --rm --name ocps-dev-docs -p 8080:80 -v $PWD/_build/html:/usr/share/nginx/html nginx:1.19.0

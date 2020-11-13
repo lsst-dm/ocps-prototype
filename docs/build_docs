@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# make clean
+make html
+cp -r api _build/html/

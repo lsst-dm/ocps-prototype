@@ -39,7 +39,7 @@ This example shows a definition for a job type ``ap``. The ``script`` parameter 
 The script parameter will be revised to require specification of immutable code for reproducibility. For example, a git repo URL (from some controlled location) and specific git commit hash would suffice.
 
 Server - OCPS Job Manager
-----------------------
+--------------------------------
 
 Server configuration can be customized using environment variables::
 
@@ -84,7 +84,7 @@ Run the client demo using the wrapper script ``run_client.sh``, which configures
 
 
 Job Manager API Specification
-----------------------
+------------------------------
 
 ``POST /api/v1/job``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

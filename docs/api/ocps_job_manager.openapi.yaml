@@ -22,7 +22,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/PutJob'
+              $ref: '#/components/schemas/PutJob'
         required: true
       responses:
         200:
@@ -31,7 +31,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PutJobResponse'
-      x-codegen-request-body-name: spec
   '/job/{job_id}':
     get:
       tags:
@@ -39,10 +38,11 @@ paths:
       summary: Request status of an existing job
       operationId: statusJob
       parameters:
-        - name: job_id
-          in: path
-          description: ID of job to return
-          required: true
+      - name: job_id
+        in: path
+        description: ID of job to return
+        required: true
+        schema:
           type: string
       responses:
         '200':
@@ -56,11 +56,6 @@ paths:
         '404':
           description: Job not found
 components:
-  # securitySchemes:
-  #   bearerAuth:            # arbitrary name for the security scheme
-  #     type: http
-  #     scheme: bearer
-  #     bearerFormat: JWT    # optional, arbitrary value for documentation purposes
   schemas:
     PutJob:
       type: object
@@ -115,3 +110,34 @@ components:
               type: string
               description: State of the job
               example: running
+            type:
+              type: string
+              description: Job type
+              example: 'ap'
+            input:
+              type: object
+              description: Input parameter values. Schema depends on job type.
+              properties:
+                EXAMPLE_PARAM:
+                  type: string
+                  description: Example of an environment variable EXAMPLE_PARAM
+                  example: 'Example of an environment variable EXAMPLE_PARAM'
+            output:
+              type: object
+              description: Job output data
+              properties:
+                urls:
+                  type: array
+                  description: URLs to output data files
+                  items:
+                    type: string
+                    description: Output data file URL
+                    example: 'https://example.com/path/to/file.dat'
+                data:
+                  type: object
+                  description: Direct output data/information. Schema depends on job type.
+                  properties:
+                    EXAMPLE:
+                      type: string
+                      description: Example parameter returned by the job
+                      example: 'Example value returned by the job'

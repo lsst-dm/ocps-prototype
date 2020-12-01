@@ -1,8 +1,3 @@
-.. OCPS Job Manager documentation master file, created by
-   sphinx-quickstart on Wed Oct 21 09:46:45 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 OCPS Job Manager Documentation
 ============================================
 
@@ -10,12 +5,14 @@ OCPS Job Manager Documentation
    :maxdepth: 2
    :caption: Contents:
 
-   Readme
    Development
    api/Readme
+   Readme
 
 Links
 ------------------------------
 
 * `DMTN-133: OCS driven data processing <https://dmtn-133.lsst.io>`_
 * `DMTN-143: Image Capture Simplification <https://dmtn-143.lsst.io>`_
+* `International  Virtual  Observatory  Alliance: Universal Worker Service Pattern <https://www.ivoa.net/documents/UWS/>`_
+   The Universal Worker Service (UWS) pattern defines how to manage asynchronous execution of jobs on a service. Any application of the pattern defines a family of related services with a common service contract. Possible uses of the pattern are also described.

@@ -11,3 +11,4 @@ db/**
 .vscode/*
 
 docs/_build/doctrees/**
+.doctrees

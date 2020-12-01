@@ -77,6 +77,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GenericServerError"
+    delete:
+      tags:
+      - Jobs
+      summary: Delete an existing job
+      description: ""
+      operationId: deleteJob
+      parameters:
+      - name: job_id
+        in: path
+        description: ID of job to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Job not found
+        "500":
+          description: error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenericServerError"
   "/job/list/{category}":
     get:
       tags:

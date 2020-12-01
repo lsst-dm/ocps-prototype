@@ -45,6 +45,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rubin OCS Controlled Pipeline System (OCPS) prototype" href="../Readme.html" />
     <link rel="prev" title="Development" href="../Development.html" /> 
 </head>
 
@@ -92,6 +93,16 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Development.html#documentation-system">Documentation system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../Development.html#sphinx">Sphinx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Development.html#file-editors-and-viewers">File editors and viewers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../Development.html#development-environment">Development environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCPS Job Manager API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Readme.html">Rubin OCS Controlled Pipeline System (OCPS) prototype</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../Readme.html#prototype">Prototype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../Readme.html#job-type-specification">Job Type Specification</a></li>
@@ -105,16 +116,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../Readme.html#initial-demonstration-of-job-awaiting-data-arrival">Initial demonstration of job awaiting data arrival</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../Development.html">Development</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../Development.html#documentation-system">Documentation system</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../Development.html#sphinx">Sphinx</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../Development.html#file-editors-and-viewers">File editors and viewers</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../Development.html#development-environment">Development environment</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OCPS Job Manager API</a></li>
 </ul>
 
             
@@ -184,8 +185,9 @@
             
   <div class="section" id="ocps-job-manager-api">
 <h1>OCPS Job Manager API<a class="headerlink" href="#ocps-job-manager-api" title="Permalink to this headline">¶</a></h1>
-<p>The OCSP Job Manager API spec is documented using the OpenAPI format in <code class="docutils literal notranslate"><span class="pre">ocps_job_manager.openapi.yaml.js</span></code> in this directory (<a class="reference download internal" href="../_downloads/ocps_job_manager.openapi.yaml.js" download=""><code class="xref download docutils literal notranslate"><span class="pre">ocps_job_manager.openapi.yaml.js</span></code></a>).</p>
-<p>View the <a class="reference external" href="spec.html">rendered API spec using the Swagger UI</a>.</p>
+<p>The OCSP Job Manager API spec is documented using the <a class="reference external" href="https://swagger.io/specification/">OpenAPI</a> format: <a class="reference download internal" href="../_downloads/ocps_job_manager.openapi.yaml.js" download=""><code class="xref download docutils literal notranslate"><span class="pre">ocps_job_manager.openapi.yaml.js</span></code></a>.</p>
+<p>Browse the <a class="reference external" href="spec.html">API spec using the Swagger UI</a>.</p>
+<p>The API spec development may be ahead of what is implemented in the API server.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In order to allow the API spec to render in the Swagger UI entirely in the browser without running a webserver, the OpenAPI spec YAML is “wrapped” in a JavaScript template literal variable definition. To edit this more easily, you will want to manually set your editor’s syntax interpreter to YAML instead of the JavaScript it will automatically try based on the file extension.</p>
@@ -199,6 +201,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Readme.html" class="btn btn-neutral float-right" title="Rubin OCS Controlled Pipeline System (OCPS) prototype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../Development.html" class="btn btn-neutral float-left" title="Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

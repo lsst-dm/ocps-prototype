@@ -86,6 +86,9 @@ Run the client demo using the wrapper script ``run_client.sh``, which configures
 Job Manager API Specification
 ------------------------------
 
+.. note::
+  For the latest definition of the API spec, which may not yet be implemented, see :doc:`api/Readme`.
+
 ``POST /api/v1/job``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

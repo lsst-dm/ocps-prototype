@@ -11,7 +11,7 @@ jobs:
     - uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
-        build-command: "make html && cp -r api _build/html/"
+        build-command: "sphinx-build -b html . _build && cp -r api _build/html/"
     # Publish built docs to gh-pages branch.
     # ===============================
     - name: Commit documentation changes

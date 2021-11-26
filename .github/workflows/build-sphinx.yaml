@@ -2,7 +2,7 @@ name: "Build Sphinx docs on push"
 on: 
   push:
     branches:
-      - master
+      - main
 jobs:
   docs:
     runs-on: ubuntu-latest
